@@ -1,32 +1,27 @@
-// components/Register.js
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 const Register = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate(); // useNavigate replaces useHistory
+  const history = useHistory();
 
   const handleRegister = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:5000/register', {
-        name,
-        email,
-        password
-      });
+      const response = await axios.post('/register', { name, email, password });
 
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
       }
 
-      navigate('/dashboard'); // Redirect after registration
+      history.push('/dashboard');
     } catch (error) {
-      console.error('Registration error:', error.response?.data || error.message);
-      alert('Registration failed. Please try again.');
+      console.error('Registration error:', error);
+      alert(`Registration failed: ${error.response?.data?.message || error.message}`);
     }
   };
 
